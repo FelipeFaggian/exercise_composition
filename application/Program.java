@@ -16,14 +16,13 @@ import enumsJava.OrderStatus;
 
 public class Program {
 	public static void main(String[] args) throws ParseException {
-		
+
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
-		Order orders = new Order();
 		OrderItem orderItem = new OrderItem();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String productName;
-		Double price, sum = 0.0;
+		Double price, z = 0.0, sum = 0.0;
 		Integer quantity;
 
 		System.out.println("Enter cliente data: ");
@@ -35,7 +34,7 @@ public class Program {
 		Date birthDate = sdf.parse(sc.next());
 		System.out.println("Enter order data: ");
 		Client client = new Client(name, email, birthDate);
-
+		Order orders = new Order();
 		System.out.print("Status: ");
 		String enumStatus = sc.next();
 		OrderStatus os2 = OrderStatus.valueOf(enumStatus);
@@ -56,8 +55,11 @@ public class Program {
 			orders.addItem(orderItem);
 			sum += orderItem.subTotal();
 		}
-
 		List<OrderItem> y = orders.getOrder();
+
+		orders = new Order(sum);
+
+		z = orders.total();
 
 		System.out.println();
 
@@ -69,17 +71,17 @@ public class Program {
 		String moment = sdDiaHora.format(data);
 		String birth = sdf.format(client.getBirthDate());
 
-		System.out.println("Order moment: " + moment);	
+		System.out.println("Order moment: " + moment);
 		System.out.println("Order status: " + os2);
 		System.out.println("Client: " + client.getName() + " (" + birth + ") - " + client.getEmail());
-		System.out.println("Order items: ");    
-		
+		System.out.println("Order items: ");
+
 		for (OrderItem x : y) {
 
 			System.out.println(x);
 		}
 
-		System.out.printf("Total price: $%.2f", sum);
+		System.out.printf("Total price: $%.2f", z);
 
 		sc.close();
 	}

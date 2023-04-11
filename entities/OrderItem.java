@@ -8,6 +8,7 @@ public class OrderItem {
 	private Double price;
 	
 	private Product product;
+	private Order order;
 	
 	public OrderItem() {
 	}
@@ -59,18 +60,15 @@ public class OrderItem {
 				+ String.format("%.2f", price)
 				+ ", " 
 				+ "Quantity: " 
-				+ quantity + ", " 
+				+ quantity
+				+ ", " 
 				+ "Subtotal: $" 
 				+ String.format("%.2f", subTotal());
 		        
 		        
-		        
-		
-				
-		
-	 
-
 		
 
 	}
+
+	
 }

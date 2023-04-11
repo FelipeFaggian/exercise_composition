@@ -14,6 +14,8 @@ public class Order {
 	private Product product;
 	private Client client;
 	private List<OrderItem> orders = new ArrayList<>();
+	private Double sum;
+	private OrderItem orderItem;
 
 	public Order() {
 	}
@@ -30,6 +32,18 @@ public class Order {
 		this.moment = moment;
 		this.status = status;
 		this.client = client;
+	}
+
+	public Order(Double sum) {
+		this.sum = sum;
+	}
+
+	public Double getSum() {
+		return sum;
+	}
+
+	public Double setSum() {
+		return sum;
 	}
 
 	public Date getMoment() {
@@ -74,6 +88,11 @@ public class Order {
 
 	public void removeItem(OrderItem order) {
 		orders.remove(order);
+	}
+
+	public Double total() {
+		return sum;
+
 	}
 
 }
