@@ -21,7 +21,7 @@ public class Product {
 		this.name = name;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
@@ -29,7 +29,11 @@ public class Product {
 		this.price = price;
 	}
 
+	public String priceTag() {
+		return name + " $ " + String.format("%.2f", price);
+	}
+
 	public String toString() {
-		return name;
+		return priceTag();
 	}
 }
