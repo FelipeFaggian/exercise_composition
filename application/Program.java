@@ -1,13 +1,10 @@
 package application;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import entities.Individuals;
-import entities.LegalPerson;
-import entities.Register;
+import model.entities.Account;
+import model.exceptions.DomainException;
 
 public class Program {
 	public static void main(String[] args) {
@@ -15,47 +12,30 @@ public class Program {
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
 
-		List<Register> list = new ArrayList<>();
-
-		System.out.print("Enter the number of tax payers: ");
-		int n = sc.nextInt();
-
-		for (int i = 1; i <= n; i++) {
-			System.out.println("Tax payer #" + i + " data:");
-			System.out.print("Individual or company (i/c)? ");
-			char ch = sc.next().charAt(0);
-			System.out.print("Name: ");
+		try {
+			System.out.println("Enter account data");
+			System.out.print("Number: ");
+			Integer number = sc.nextInt();
 			sc.nextLine();
-			String name = sc.nextLine();
-			System.out.print("Anual income: ");
-			Double income = sc.nextDouble();
-			if (ch == 'i') {
-				System.out.print("Health expenditures: ");
-				Double healthExpenditures = sc.nextDouble();
-				list.add(new Individuals(name, income, healthExpenditures));
-			}
-			if (ch == 'c') {
-				System.out.print("Number of employees: ");
-				Integer numberOfEmployees = sc.nextInt();
-				list.add(new LegalPerson(name, income, numberOfEmployees));
-			}
+			System.out.print("Holder: ");
+			String holder = sc.nextLine();
+			System.out.print("Initial balance: ");
+			Double balance = sc.nextDouble();
+			System.out.print("Withdraw limit: ");
+			Double withdrawLimit = sc.nextDouble();
+			Account acc = new Account(number, holder, balance, withdrawLimit);
+
+			System.out.println();
+
+			System.out.print("Enter amount for withdraw: ");
+			Double amount = sc.nextDouble();
+			acc.withdraw(amount);
+			System.out.print(acc);
+		} catch (DomainException e) {
+			System.out.println("Withdraw error: " + e.getMessage());
+		} catch (RuntimeException e) {
+			System.out.println("Unexpected error");
 		}
-
-		System.out.println();
-		System.out.println("TAXES PAID: ");
-		
-		for (Register register : list) {
-			System.out.println(register);
-		}
-
-		Double sum = 0.0;
-
-		for (Register register : list) {
-			sum += register.tax();
-		}
-
-		System.out.println();
-		System.out.printf("TOTAL TAXES: $ %.2f", sum);
 
 		sc.close();
 	}
