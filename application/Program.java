@@ -1,70 +1,44 @@
 package application;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+import model.entities.Contract;
+import model.entities.Installment;
+import model.services.ContractService;
+import model.services.PaypalService;
+
 public class Program {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
+		Contract contract = new Contract();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		List<String> list = new ArrayList<String>();
-
-		String[] lines = new String[] { "TV LED,1290.99,1", "Video Game Chair,350.50,3", "Iphone X,900.00,2",
-				"Samsung Galaxy 9,850.00,2" };
-
-		String path = "C:\\temp\\.csv";
-
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
-
-			for (String line : lines) {
-				bw.write(line);
-				bw.newLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		System.out.println("Enter contract data: ");
+		System.out.print("Number: ");
+		Integer number = sc.nextInt();
+		System.out.print("Date (dd/MM/yyyy): ");
+		sc.nextLine();
+		Date date = sdf.parse(sc.nextLine());
+		System.out.print("Contract value: ");
+		Double totalValue = sc.nextDouble();
+		System.out.print("Enter the number of installments: ");
+		Integer months = sc.nextInt();
+		contract = new Contract(number, date, totalValue);
+		System.out.println("Installments: ");
+		ContractService cs = new ContractService(new PaypalService(), months);
+		cs.processContract(contract, months);
+		for (String listing : cs.getList()) {
+			System.out.println(listing);
 		}
-
-		boolean file = new File("C:\\temp\\out").mkdir();
-
-		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-
-			String line = br.readLine();
-			while (line != null) {
-				String[] output = line.split(",");
-				String name = output[0];
-				int quantity = Integer.parseInt(output[2]);
-				double price = Double.parseDouble(output[1]);
-				double total = quantity * price;
-				list.add(name + ", " + String.format("%.2f", total));
-				line = br.readLine();
-			}
-
-		} catch (IOException e) {
-			System.out.println("Error: " + e.getMessage());
-		}
-		
-		String pathSum = "C:\\temp\\out\\summary.csv";
-
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathSum))) {
-
-			for (String sum : list) {
-				bw.write(sum);
-				bw.newLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 		sc.close();
 	}
 }
