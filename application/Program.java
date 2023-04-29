@@ -1,44 +1,46 @@
 package application;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.Set;
 
-import model.entities.Contract;
-import model.entities.Installment;
-import model.services.ContractService;
-import model.services.PaypalService;
+import entities.StudentCode;
 
 public class Program {
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) {
 
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
-		Contract contract = new Contract();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		System.out.println("Enter contract data: ");
-		System.out.print("Number: ");
-		Integer number = sc.nextInt();
-		System.out.print("Date (dd/MM/yyyy): ");
-		sc.nextLine();
-		Date date = sdf.parse(sc.nextLine());
-		System.out.print("Contract value: ");
-		Double totalValue = sc.nextDouble();
-		System.out.print("Enter the number of installments: ");
-		Integer months = sc.nextInt();
-		contract = new Contract(number, date, totalValue);
-		System.out.println("Installments: ");
-		ContractService cs = new ContractService(new PaypalService(), months);
-		cs.processContract(contract, months);
-		for (String listing : cs.getList()) {
-			System.out.println(listing);
+		Set<StudentCode> set = new HashSet<>();
+
+		System.out.print("How many students for course A? ");
+		int n = sc.nextInt();
+		
+		for (int i = 0; i<n; i++) {	
+		int number = sc.nextInt();
+		set.add(new StudentCode(number));
 		}
+		
+		System.out.print("How many students for course B? ");
+		n = sc.nextInt();
+		
+		for (int i = 0; i<n; i++) {	
+		int number = sc.nextInt();	
+		set.add(new StudentCode(number));
+		}
+		
+		System.out.print("How many students for course C? ");
+		n = sc.nextInt();
+		
+		for (int i = 0; i<n; i++) {		
+		int number = sc.nextInt();	
+		set.add(new StudentCode(number));
+		}
+	
+		System.out.print("Total students: " + set.size());
+		
 		sc.close();
 	}
 }
