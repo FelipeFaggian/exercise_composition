@@ -1,56 +1,55 @@
 package application;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import entities.Employees;
+
 public class Program {
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) {
 
+		Locale.setDefault(new Locale("en", "US"));
 		Scanner sc = new Scanner(System.in);
-		Locale.setDefault(Locale.US);
-		final Map<String, Integer> mapUrney = new TreeMap<>();
 
-		System.out.print("Enter file full path: ");
-		String pathFile = sc.nextLine();
-		File sourceFile = new File(pathFile);
+		System.out.print("Enter full file path: ");
+		String path = sc.nextLine();
 
-		try (BufferedReader br = new BufferedReader(new FileReader(pathFile))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+
+			List<Employees> list = new ArrayList<>();
+
 			String line = br.readLine();
+
 			while (line != null) {
-				String[] field = line.split(",");
-				String name = field[0];
-				Integer votes = Integer.parseInt(field[1]);
-				if (mapUrney.containsKey(name) == true) {
-					votes = votes + mapUrney.get(name);
-					mapUrney.put(name, votes);
-				} else {
-					mapUrney.put(name, votes);
-				}
+				String[] fields = line.split(",");
+				list.add(new Employees(fields[0], fields[1], Double.parseDouble(fields[2])));
 				line = br.readLine();
 			}
 
-		} catch (IOException e) {
-			System.out.println(e);
-		}
+			System.out.print("Enter salary: ");
+			Double salary = sc.nextDouble();
 
-		final Map<String, Integer> mapUrneyOrder = mapUrney.entrySet().stream()
-				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-				.collect(Collectors.toMap(
-						Map.Entry::getKey, 
-						Map.Entry::getValue, 
-						(e1, e2) -> e1, LinkedHashMap::new));
-		
-		mapUrneyOrder.forEach(((key, value) -> System.out.println(key + ": " + mapUrney.get(key))));
+			List<String> emails = list.stream().filter(p -> p.getSalary() > salary).map(p -> p.getEmail()).sorted()
+					.collect(Collectors.toList());
+
+			System.out.println("Email of people whose salary is more than " + String.format("%.2f", salary) + ":");
+
+			emails.forEach(System.out::println);
+
+			Double sum = list.stream().filter(p -> p.getName().charAt(0) == 'M').map(p -> p.getSalary()).reduce(0.0,
+					(x, y) -> x + y);
+
+			System.out.printf("Sum of salary of people whose name starts with 'M': %.2f", sum);
+
+		} catch (IOException e) {
+			System.out.println("Error: " + e);
+		}
 
 		sc.close();
 	}
